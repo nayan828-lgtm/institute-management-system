@@ -1,4 +1,4 @@
-# GCETTS Institute Management System 🎓
+# Institute Management System 🎓
 
 A robust, full-stack web application designed to manage student attendance, semester promotions, and departmental data for the Govt. College of Engineering & Textile Technology, Serampore.
 
