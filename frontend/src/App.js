@@ -255,7 +255,7 @@ function FacultyPortal() {
     <div style={{ padding: '40px', maxWidth: '1000px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h2 style={{ color: '#1e3a8a' }}>Welcome, {profData.name}</h2>
-        <button onClick={() => setProfData(null)} style={{ padding: '8px 15px', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>Logout</button>
+        <button onClick={() => window.location.href = '/'} style={{ padding: '8px 15px', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>Logout</button>
       </div>
 
       {!selectedSubject ? (
@@ -379,7 +379,7 @@ function StudentPortal() {
               <p style={{ margin: 0, color: '#64748b', fontSize: '1.1rem' }}>Roll No: <strong>{student.rollNumber}</strong></p>
               <p style={{ margin: '5px 0 0 0', color: '#64748b' }}>Department: {student.department.toUpperCase()} | Enrolled Sem: {student.currentSemester}</p>
             </div>
-            <button onClick={() => setStudent(null)} style={{ padding: '8px 15px', backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer' }}>Logout</button>
+            <button onClick={() => window.location.href = '/'} style={{ padding: '8px 15px', backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer' }}>Logout</button>
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', backgroundColor: '#f8fafc', padding: '15px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
