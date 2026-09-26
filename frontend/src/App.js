@@ -234,6 +234,31 @@ function FacultyPortal() {
     }
   };
 
+  // 5. Download CSV Report
+  const downloadCSV = () => {
+    if (!selectedSubject || students.length === 0) return;
+
+    // Create the CSV headers
+    let csvContent = "Roll Number,Student Name,Attendance Status\n";
+
+    // Loop through the students and add their data rows
+    students.forEach(s => {
+      csvContent += `${s.rollNumber},${s.name},${attendance[s.rollNumber]}\n`;
+    });
+
+    // Create a downloadable file object in the browser
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    
+    // Create a temporary hidden link to trigger the download
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${selectedSubject.subjectCode}_Attendance_Report.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (!profData) {
     return (
       <div style={{ padding: '40px', maxWidth: '400px', margin: '0 auto', marginTop: '10vh' }}>
@@ -279,7 +304,14 @@ function FacultyPortal() {
         <div style={{ background: 'white', padding: '30px', marginTop: '20px', borderRadius: '8px', borderTop: '4px solid #059669', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <h3 style={{ margin: 0, color: '#059669' }}>Taking Attendance: {selectedSubject.subjectName}</h3>
-            <button onClick={() => setSelectedSubject(null)} style={{ padding: '8px 15px', backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer' }}>Cancel / Go Back</button>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button onClick={downloadCSV} style={{ padding: '8px 15px', backgroundColor: '#d97706', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+                Export to Excel (CSV)
+              </button>
+              <button onClick={() => setSelectedSubject(null)} style={{ padding: '8px 15px', backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer' }}>
+                Cancel / Go Back
+              </button>
+            </div>
           </div>
           
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
