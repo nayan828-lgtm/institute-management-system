@@ -229,7 +229,7 @@ function StudentPortal() {
       setViewSemester(data.currentSemester);
       fetchAttendance(data.rollNumber, data.currentSemester);
     } catch (err) {
-      setError('Invalid Roll Number. Please try again. (Example: GCETTS-CSE-1-01)');
+      setError('Invalid Roll Number. Please try again.');
     }
   };
 
@@ -283,7 +283,7 @@ function StudentPortal() {
             <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
               <input 
                 type="text" 
-                placeholder="Roll No (e.g. GCETTS-CSE-1-01)" 
+                placeholder="Roll No." 
                 value={rollInput} 
                 onChange={(e) => setRollInput(e.target.value.toUpperCase())} 
                 style={{ padding: '12px', width: '300px', borderRadius: '4px', border: '1px solid #cbd5e1' }} 
@@ -356,17 +356,35 @@ function StudentPortal() {
   );
 }
 
-// --- ADMIN / FACULTY PORTAL (Fixed Total Classes Logic) ---
+// --- ADMIN / FACULTY PORTAL (With Security Login) ---
 function FacultyPortal() {
+  // --- NEW SECURITY STATES ---
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+
+  // --- EXISTING DASHBOARD STATES ---
   const [department, setDepartment] = useState('cse');
   const [semester, setSemester] = useState(1);
   const [students, setStudents] = useState([]);
   
   const [targetSubject, setTargetSubject] = useState('');
   const [targetMonth, setTargetMonth] = useState('September');
-  const [targetTotal, setTargetTotal] = useState(0); // DEFAULTS TO 0
+  const [targetTotal, setTargetTotal] = useState(0); 
   
   const [inputAttended, setInputAttended] = useState({});
+
+  // --- LOGIN HANDLER ---
+  const handleAdminLogin = (e) => {
+    e.preventDefault();
+    if (username === 'admin@oops' && password === '1234') {
+      setIsLoggedIn(true);
+      setLoginError('');
+    } else {
+      setLoginError('Invalid username or password. Access Denied.');
+    }
+  };
 
   useEffect(() => {
     const subs = getSubjectsForSemester(semester);
@@ -403,14 +421,9 @@ function FacultyPortal() {
           data.forEach(record => {
             savedInputs[record.rollNumber] = record.classesAttended;
           });
-          
           setInputAttended(savedInputs);
-          
-          // FIX: Instead of letting every student overwrite the box, 
-          // we only look at the very first student's record for the Total Classes.
           setTargetTotal(data[0].totalClasses); 
         } else {
-          // If the month is completely empty (no database records), clear it to 0
           setInputAttended({});
           setTargetTotal(0); 
         }
@@ -430,16 +443,9 @@ function FacultyPortal() {
     const attended = parseInt(rawAttended);
     const total = parseInt(targetTotal) || 0; 
 
-    // STRICT VALIDATION CHECKS
-    if (attended < 0) {
-      alert("Error: Attended classes cannot be negative."); return;
-    }
-    if (total < 0) {
-      alert("Error: Total classes held cannot be negative."); return;
-    }
-    if (attended > total) {
-      alert(`Error: Student attended (${attended}) classes, but only (${total}) were held. Attended cannot exceed Total.`); return;
-    }
+    if (attended < 0) { alert("Error: Attended classes cannot be negative."); return; }
+    if (total < 0) { alert("Error: Total classes held cannot be negative."); return; }
+    if (attended > total) { alert(`Error: Student attended (${attended}) classes, but only (${total}) were held.`); return; }
 
     const record = {
       rollNumber: rollNumber, semester: semester, subjectName: targetSubject, month: targetMonth, classesAttended: attended, totalClasses: total
@@ -464,9 +470,51 @@ function FacultyPortal() {
     }
   };
 
+  // --- RENDER LOGIN SCREEN IF NOT LOGGED IN ---
+  if (!isLoggedIn) {
+    return (
+      <div style={{ padding: '40px', maxWidth: '400px', margin: '0 auto', marginTop: '10vh' }}>
+        <Link to="/" style={{ color: '#1e3a8a', textDecoration: 'none', fontWeight: 'bold' }}>← Back to Home</Link>
+        
+        <div style={{ background: 'white', padding: '40px', borderRadius: '8px', borderTop: '4px solid #1e3a8a', marginTop: '20px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', textAlign: 'center' }}>
+          <h2 style={{ color: '#1e3a8a', marginTop: 0, marginBottom: '25px' }}>Admin Login</h2>
+          
+          <form onSubmit={handleAdminLogin} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <input 
+              type="text" 
+              placeholder="Admin Username" 
+              value={username} 
+              onChange={(e) => setUsername(e.target.value)} 
+              style={{ padding: '12px', borderRadius: '4px', border: '1px solid #cbd5e1' }} 
+              required 
+            />
+            <input 
+              type="password" 
+              placeholder="Password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              style={{ padding: '12px', borderRadius: '4px', border: '1px solid #cbd5e1' }} 
+              required 
+            />
+            <button type="submit" style={{ padding: '12px', backgroundColor: '#1e3a8a', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+              Secure Login
+            </button>
+          </form>
+          {loginError && <p style={{ color: '#dc2626', marginTop: '15px', fontWeight: 'bold' }}>{loginError}</p>}
+        </div>
+      </div>
+    );
+  }
+
+  // --- RENDER DASHBOARD IF LOGGED IN ---
   return (
     <div style={{ padding: '40px', maxWidth: '1000px', margin: '0 auto' }}>
-      <Link to="/" style={{ color: '#1e3a8a', textDecoration: 'none', fontWeight: 'bold' }}>← Back to Home</Link>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Link to="/" style={{ color: '#1e3a8a', textDecoration: 'none', fontWeight: 'bold' }}>← Back to Home</Link>
+        <button onClick={() => setIsLoggedIn(false)} style={{ padding: '8px 15px', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+          Logout
+        </button>
+      </div>
       
       <div style={{ background: 'white', padding: '30px', borderRadius: '8px', borderTop: '4px solid #1e3a8a', marginTop: '20px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
         <h2 style={{ color: '#1e3a8a', marginTop: 0 }}>Admin Dashboard</h2>
