@@ -1,37 +1,48 @@
-# Institute Management System 🎓
+# 🎓 Institute Management System (GCETTS)
 
-A robust, full-stack web application designed to manage student attendance, semester promotions, and departmental data for the Govt. College of Engineering & Textile Technology, Serampore.
+A full-stack, cloud-hosted Enterprise Resource Planning (ERP) mini-project built for the Government College of Engineering & Textile Technology, Serampore. This system automates daily academic operations, featuring role-based secure portals for faculty to record attendance and for students to track their real-time academic metrics.
 
-## 🚀 Features
+## 🚀 Live Demo
+* **Frontend (User Interface):** https://institute-management-system-tl9j.vercel.app/
+* **Backend (REST API):** https://institute-management-system-1-c9x4.onrender.com
 
-### Admin / Faculty Portal
-* **Batch Loading:** Load entire classrooms instantly by filtering through Department (CSE, IT, APM, TT) and Semester (1-8).
-* **Strict Attendance Validation:** Prevents logical errors (e.g., negative attendance, or entering 35 attended classes when only 30 were held).
-* **Smart Upsert Logic:** Automatically fetches existing records from the database when switching subjects/months to prevent accidental data overwrites.
-* **Bulk Promotion:** One-click promotion system that upgrades an entire batch of students to the next semester.
-
-### Student Portal
-* **Identity Verification:** Secure login using designated Roll Numbers.
-* **Aggregated Analytics:** Groups monthly data into a single, clean Subject-wise percentage view.
-* **Historical Data:** Dropdown navigation allows students to view their attendance records from past semesters.
-
-### Auto-Seeding Database
-* On the very first startup, the backend will automatically generate **640 student records** (20 students per semester, across 8 semesters and 4 departments) so the app is instantly ready for testing.
-
----
-
-## 🛠️ Tech Stack
+## 💻 Tech Stack
 * **Frontend:** React.js, React Router, CSS3, Lucide Icons
 * **Backend:** Java, Spring Boot, Spring Data JPA, RESTful APIs
-* **Database:** H2 Database (Relational, File-based storage)
+* **Database:** PostgreSQL (Hosted on Neon.tech)
+* **Deployment:** Vercel (Frontend), Render (Backend)
 
----
+## ✨ Core Features
+* **Role-Based Access Control (RBAC):** Distinct secure routing and dashboards for Faculty and Students.
+* **Dynamic Relational Mapping:** Faculty dashboards automatically populate with their specifically assigned subjects and exact student batches based on department and semester.
+* **Automated Attendance System:** Digital roll-call interface allowing professors to mark present/absent with live database syncing.
+* **Real-Time Student Analytics:** Students can log in with their Roll Number to view cumulative attendance percentages and individual subject breakdowns.
+* **CSV Reporting:** Faculty can export daily attendance records to an Excel-compatible `.csv` format in one click.
+* **Bulk Scalability:** System successfully handles and maps automated data for 160 students across 4 departments (CSE, IT, APM, TT) and 4 semesters.
 
-## 💻 Local Setup & Installation
+## 🗄️ Database Architecture
+The PostgreSQL relational database is structured with 5 core entities:
+1. `students` (Roll Number, Name, Department, Semester)
+2. `professors` (ID, Name, Username, Secure Password)
+3. `subjects` (Subject Code, Name, Department, Semester)
+4. `faculty_allocations` (Maps Professor IDs to Subject Codes)
+5. `attendance_logs` (Tracks Subject, Roll Number, Date, and Present/Absent Status)
 
-To run this project locally, you will need **Node.js** and **Java (JDK 17+)** installed on your machine.
+## 🧪 Testing Credentials
+To evaluate the live system, use the following proof-of-concept credentials:
 
-### 1. Clone the Repository
-```bash
-git clone [https://github.com/nayan828-lgtm/institute-management-system.git](https://github.com/nayan828-lgtm/institute-management-system.git)
-cd institute-management-system
+**Faculty Portal:**
+* **Username:** `profa@oops`
+* **Password:** `1234`
+*(Assigned to CS301 - Data Structure & Algorithms)*
+
+**Student Portal:**
+* **Roll Number:** `GCETTS-CSE-3-01` (to `GCETTS-CSE-3-10`)
+* **Roll Number:** `GCETTS-TT-3-01` (to `GCETTS-TT-3-10`)
+
+## 🛠️ Local Installation
+If you wish to run this project locally:
+
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/yourusername/institute-management-system.git](https://github.com/yourusername/institute-management-system.git)
