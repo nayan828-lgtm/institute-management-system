@@ -243,7 +243,7 @@ function FacultyPortal() {
 
     // Loop through the students and add their data rows
     students.forEach(s => {
-      csvContent += `${s.rollNumber},${s.name},${attendance[s.rollNumber]}\n`;
+      csvContent += `${s.rollNumber},"${s.name}",${attendance[s.rollNumber]}\n`;
     });
 
     // Create a downloadable file object in the browser
