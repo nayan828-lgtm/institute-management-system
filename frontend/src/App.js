@@ -221,7 +221,7 @@ function StudentPortal() {
     e.preventDefault();
     setError('');
     try {
-      const res = await fetch(`http://127.0.0.1:8080/api/admin/students/roll/${rollInput}`);
+      const res = await fetch(`https://institute-management-system-1-c9x4.onrender.com/api/admin/students/roll/${rollInput}`);
       if (!res.ok) throw new Error('Student not found');
       const data = await res.json();
       
@@ -235,7 +235,7 @@ function StudentPortal() {
 
   const fetchAttendance = async (roll, sem) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8080/api/admin/attendance/${roll}/semester/${sem}`);
+      const res = await fetch(`https://institute-management-system-1-c9x4.onrender.com/api/admin/attendance/${roll}/semester/${sem}`);
       const data = await res.json();
       if (Array.isArray(data)) {
         setAttendanceRecords(data);
@@ -381,7 +381,7 @@ function FacultyPortal() {
 
   const fetchStudents = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8080/api/admin/students/${department}/semester/${semester}`);
+      const response = await fetch(`https://institute-management-system-1-c9x4.onrender.com/api/admin/students/${department}/semester/${semester}`);
       const data = await response.json();
       if (Array.isArray(data)) {
         setStudents(data);
@@ -394,7 +394,7 @@ function FacultyPortal() {
 
   const loadAttendanceData = async () => {
     try {
-      const res = await fetch(`http://127.0.0.1:8080/api/admin/attendance/batch/semester/${semester}/subject/${targetSubject}/month/${targetMonth}`);
+      const res = await fetch(`https://institute-management-system-1-c9x4.onrender.com/api/admin/attendance/batch/semester/${semester}/subject/${targetSubject}/month/${targetMonth}`);
       if (res.ok) {
         const data = await res.json();
         const savedInputs = {};
@@ -446,7 +446,7 @@ function FacultyPortal() {
     };
 
     try {
-      const res = await fetch('http://127.0.0.1:8080/api/admin/attendance/upload', {
+      const res = await fetch('https://institute-management-system-1-c9x4.onrender.com/api/admin/attendance/upload', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(record)
       });
       if (!res.ok) throw new Error("Backend rejected the save.");
@@ -458,7 +458,7 @@ function FacultyPortal() {
 
   const promoteStudents = async () => {
     if(window.confirm(`Are you sure you want to promote all ${department.toUpperCase()} Sem ${semester} students?`)){
-      await fetch(`http://127.0.0.1:8080/api/admin/students/promote/${department}/${semester}`, { method: 'POST' });
+      await fetch(`https://institute-management-system-1-c9x4.onrender.com/api/admin/students/promote/${department}/${semester}`, { method: 'POST' });
       alert("Students promoted successfully!");
       setStudents([]); 
     }
