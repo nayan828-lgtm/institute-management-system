@@ -11,4 +11,6 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, In
     
     // To check if attendance was already taken today
     List<AttendanceLog> findBySubjectCodeAndLogDate(String subjectCode, LocalDate logDate);
+    void deleteBySubjectCodeAndLogDate(String subjectCode, java.time.LocalDate logDate);
+    
 }

@@ -2,9 +2,19 @@ package com.example.demo.controller;
 
 import com.example.demo.model.*;
 import com.example.demo.repository.*;
+
+import main.java.com.example.demo.model.AttendanceLog;
+import main.java.com.example.demo.model.FacultyAllocation;
+import main.java.com.example.demo.model.Professor;
+import main.java.com.example.demo.repository.AttendanceLogRepository;
+import main.java.com.example.demo.repository.FacultyAllocationRepository;
+import main.java.com.example.demo.repository.ProfessorRepository;
+import main.java.com.example.demo.repository.SubjectRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -49,13 +59,26 @@ public class ApiController {
         return ResponseEntity.ok(students);
     }
 
-    // 4. Save the daily attendance log
+    // 4. Save the daily attendance log (With Duplicate Prevention)
     @PostMapping("/faculty/attendance")
+    @Transactional
     public ResponseEntity<?> saveDailyAttendance(@RequestBody List<AttendanceLog> logs) {
-        for (AttendanceLog log : logs) {
-            log.setLogDate(LocalDate.now()); // Automatically stamps today's date
-            logRepo.save(log);
+        if (logs.isEmpty()) {
+            return ResponseEntity.badRequest().body("No logs provided");
         }
+        
+        String subjectCode = logs.get(0).getSubjectCode();
+        LocalDate today = LocalDate.now();
+
+        // 1. Delete any existing attendance for this subject today to prevent duplicates
+        logRepo.deleteBySubjectCodeAndLogDate(subjectCode, today);
+
+        // 2. Set today's date for all logs and save them at once
+        for (AttendanceLog log : logs) {
+            log.setLogDate(today);
+        }
+        logRepo.saveAll(logs);
+        
         return ResponseEntity.ok("Attendance saved successfully!");
     }
 
